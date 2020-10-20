@@ -1,0 +1,7 @@
+[
+  { "sendAccount":  1004, "receiveAccount": 1005, "amount":  3000.00, "date": "2020/06/10" },
+  { "sendAccount":  1005, "receiveAccount": 1004, "amount":  2000.00, "date": "2020/06/14" },
+  { "sendAccount":  1005, "receiveAccount": 1010, "amount":  2570.63, "date": "2020/06/20" },
+  { "sendAccount":  1003, "receiveAccount": 1001, "amount":  200.00, "date": "2020/07/04" },
+  { "sendAccount":  1001, "receiveAccount": 1007, "amount":  1500.00, "date": "2020/08/28" }
+]

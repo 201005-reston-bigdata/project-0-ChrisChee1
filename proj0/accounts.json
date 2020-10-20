@@ -1,0 +1,7 @@
+[
+  { "accountNum": 1001, "lastName": "Doe", "firstName": "John", "accountType": "Checking", "balance": 1000.00, "interest": 0.0 },
+  { "accountNum": 1007, "lastName": "Scott", "firstName": "Edith", "accountType": "Checking", "balance": 862.38, "interest": 0.0 },
+  { "accountNum": 1008, "lastName": "Henry", "firstName": "Arthur", "accountType": "Checking", "balance": 450.89, "interest": 0.0 },
+  { "accountNum": 1009, "lastName": "Stevens", "firstName": "Elizabeth", "accountType": "Savings", "balance": 126385.21, "interest": 0.77 },
+  { "accountNum": 1010, "lastName": "Lynch", "firstName": "Scott", "accountType": "Savings", "balance": 82953.49, "interest": 0.77 }
+]
