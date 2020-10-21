@@ -3,7 +3,7 @@ package proj0
 import org.mongodb.scala.{FindObservable, MongoClient, MongoCollection, Observable}
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.mongodb.scala.bson.codecs.Macros._
-import org.mongodb.scala.model.Filters
+import org.mongodb.scala.model.{Filters, Sorts}
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates._
 
@@ -28,12 +28,27 @@ class AccountDAO(mongoClient: MongoClient) {
 
   def getAccounts(): Seq[Account] = getResults(collection.find())
 
+  def getAccountsByBal() =
+  {
+    getResults(collection.find().sort(Sorts.descending("balance")))
+  }
+
   def getAccount(accountNum: Int) =
   {
       if (findAccount(accountNum).isEmpty)
         println(s"Account ${accountNum} does not exist")
       else
         println(findAccount(accountNum)(0).toString())
+  }
+
+  def getChecking() =
+  {
+    getResults(collection.find(Filters.equal("accountType", "Checking")))
+  }
+
+  def getSavings() =
+  {
+    getResults(collection.find(Filters.equal("accountType", "Savings")))
   }
 
   def addAccount(account: Account): Unit =

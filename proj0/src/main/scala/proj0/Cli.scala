@@ -14,20 +14,40 @@ class Cli {
   val commandArgPattern : Regex = "(\\w+)\\s*(.*)".r
   val commandArgPattern2 : Regex = "(\\w+)\\s*(\\w+)\\s*(.*)".r
 
+  def printWelcome(): Unit =
+  {
+    println("=============================================================")
+    println("       Welcome to the Bank Account/Transaction Manager")
+    println()
+    println("This application helps manage and track simple accounts")
+    println("and transactions. Many helpful tools are available from")
+    println("reading account/transaction data from csv and json files")
+    println("to querying account data and paying out interest to accounts.")
+    println("=============================================================")
+    println()
+  }
+
   def printOptions(): Unit =
   {
-    println("Please enter a command: ")
-    println("read accounts [filename]")
-    println("read transactions [filename]")
-    println("list accounts")
-    println("list account [account number]")
-    println("list transactions")
-    println("list transactions [account number]")
-    println("pay interest")
-    println("delete accounts")
-    println("delete account [account number]")
-    println("delete transactions")
-    println("exit")
+    println("Commands: ")
+    println("Add Account/Transaction Information to Database:")
+    println("    Read Accounts From File:                   read accounts [filename]")
+    println("    Read Transactions From File:               read transactions [filename]")
+    println("List Account/Transaction Information:")
+    println("    Show All Accounts:                         list accounts")
+    println("    Show ALl Accounts by Balance:              list accounts balance")
+    println("    Show One Account:                          list account [account number]")
+    println("    Show All Transactions:                     list transactions")
+    println("    Show All Transactions by Amount:           list transactions amount")
+    println("    Show All Transactions by Date:             list transactions date")
+    println("    Show Transactions Involving an Account:    list transactions [account number]")
+    println("Managing Accounts/Transactions:")
+    println("    Pay Interest to Accounts:                  pay interest")
+    println("    Delete One Account:                        delete account [account number]")
+    println("    Delete All Accounts:                       delete accounts")
+    println("    Delete All Transactions:                   delete transactions")
+    println("Exit:                                          exit")
+    println("Please enter a command:")
   }
 
   def menu(): Unit =
@@ -36,6 +56,8 @@ class Cli {
     val accountsDAO = new AccountDAO(client)
     val transactionsDAO = new TransactionDAO(client)
     var loop = true
+
+    printWelcome()
 
     while (loop)
     {
@@ -72,11 +94,24 @@ class Cli {
               accountsDAO.getAccount(arg.toInt)
             }
             else if (fileType.equalsIgnoreCase("accounts"))
-              accountsDAO.getAccounts().foreach(account => println(s"${account}\n"))
+            {
+              if (arg.equalsIgnoreCase("balance"))
+                accountsDAO.getAccountsByBal().foreach(account => println(s"${account}\n"))
+              else
+                accountsDAO.getAccounts().foreach(account => println(s"${account}\n"))
+            }
+            else if (fileType.equalsIgnoreCase("checking"))
+              accountsDAO.getChecking().foreach(account => println(s"${account}\n"))
+            else if (fileType.equalsIgnoreCase("savings"))
+              accountsDAO.getSavings().foreach(account => println(s"${account}\n"))
             else if (fileType.equalsIgnoreCase("transactions"))
             {
               if (arg.equals(""))
                 transactionsDAO.getTransactions().foreach(transaction => println(s"${transaction}\n"))
+              else if (arg.equalsIgnoreCase("amount"))
+                transactionsDAO.getTransactionsByAmt().foreach(transaction => println(s"${transaction}\n"))
+              else if (arg.equalsIgnoreCase("date"))
+                transactionsDAO.getTransactionsByDate().foreach(transaction => println(s"${transaction}\n"))
               else
               {
                 val transactions = transactionsDAO.findTransactions(arg.toInt)

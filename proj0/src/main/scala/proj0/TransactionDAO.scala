@@ -3,8 +3,7 @@ package proj0
 import org.mongodb.scala.{MongoClient, MongoCollection, Observable}
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.mongodb.scala.bson.codecs.Macros._
-import org.mongodb.scala.model.Filters
-
+import org.mongodb.scala.model.{Filters, Sorts}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.{Duration, SECONDS}
@@ -26,6 +25,16 @@ class TransactionDAO(mongoClient: MongoClient) {
   }
 
   def getTransactions(): Seq[Transaction] = getResults(collection.find())
+
+  def getTransactionsByAmt() =
+  {
+    getResults(collection.find().sort(Sorts.descending("amount")))
+  }
+
+  def getTransactionsByDate() =
+  {
+    getResults(collection.find().sort(Sorts.descending("date")))
+  }
 
   def findTransactions(accountNum: Int) =
   {
