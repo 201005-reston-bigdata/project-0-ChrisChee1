@@ -9,11 +9,13 @@ import sun.java2d.pipe.SpanShapeRenderer.Simple
 import scala.io.StdIn
 import scala.util.matching.Regex
 
+/** Command Line Interface for the Bank Account/Transaction Manager that interacts with the user */
 class Cli {
 
   val commandArgPattern : Regex = "(\\w+)\\s*(.*)".r
   val commandArgPattern2 : Regex = "(\\w+)\\s*(\\w+)\\s*(.*)".r
 
+  /** Prints welcome message and information about the application */
   def printWelcome(): Unit =
   {
     println("=============================================================")
@@ -27,6 +29,7 @@ class Cli {
     println()
   }
 
+  /** Lists command options that the user can run */
   def printOptions(): Unit =
   {
     println("Commands: ")
@@ -39,7 +42,6 @@ class Cli {
     println("    Show One Account:                          list account [account number]")
     println("    Show All Transactions:                     list transactions")
     println("    Show All Transactions by Amount:           list transactions amount")
-    println("    Show All Transactions by Date:             list transactions date")
     println("    Show Transactions Involving an Account:    list transactions [account number]")
     println("Managing Accounts/Transactions:")
     println("    Pay Interest to Accounts:                  pay interest")
@@ -50,6 +52,7 @@ class Cli {
     println("Please enter a command:")
   }
 
+  /** Looping menu that manages function calls to MongoDB database */
   def menu(): Unit =
   {
     val client = MongoClient()
@@ -107,11 +110,9 @@ class Cli {
             else if (fileType.equalsIgnoreCase("transactions"))
             {
               if (arg.equals(""))
-                transactionsDAO.getTransactions().foreach(transaction => println(s"${transaction}\n"))
+                transactionsDAO.getTransactionsByDate().foreach(transaction => println(s"${transaction}\n"))
               else if (arg.equalsIgnoreCase("amount"))
                 transactionsDAO.getTransactionsByAmt().foreach(transaction => println(s"${transaction}\n"))
-              else if (arg.equalsIgnoreCase("date"))
-                transactionsDAO.getTransactionsByDate().foreach(transaction => println(s"${transaction}\n"))
               else
               {
                 val transactions = transactionsDAO.findTransactions(arg.toInt)
@@ -167,6 +168,7 @@ class Cli {
     }
   }
 
+  /** Parser for CSV account files that uses FileUtil class to extract text in file */
   def parseCSVAccounts(fileName: String, dao: AccountDAO): Unit =
   {
     val accountArray = FileUtil.getCSVText(fileName).getOrElse("None").split("\n")
@@ -178,6 +180,7 @@ class Cli {
     }
   }
 
+  /** Parser for CSV transaction files that uses FileUtil class to extract text in file */
   def parseCSVTransactions(fileName: String, transactionDAO: TransactionDAO, accountsDAO: AccountDAO): Unit =
   {
     val dateFormat = "yyyy/MM/dd"
@@ -197,6 +200,7 @@ class Cli {
     }
   }
 
+  /** Parser for JSON account files that uses FileUtil class to extract text in file */
   def parseJSONAccounts(fileName: String, dao: AccountDAO): Unit =
   {
     val accountArray = FileUtil.getJSONText(fileName).getOrElse("None").split("},")
@@ -216,6 +220,7 @@ class Cli {
     }
   }
 
+  /** Parser for JSON transaction files that uses FileUtil class to extract text in file */
   def parseJSONTransactions(fileName: String, transactionDAO: TransactionDAO, accountsDAO: AccountDAO): Unit =
   {
     val dateFormat = "yyyy/MM/dd"

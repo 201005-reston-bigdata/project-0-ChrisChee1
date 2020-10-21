@@ -2,6 +2,7 @@ package proj0
 
 import org.bson.types.ObjectId
 
+/** Case class to represent an Account in the application */
 case class Account(_id: ObjectId, accountNum: Int, lastName: String, firstName: String, accountType: String, balance: Float, interest: Float) {
 
   override def toString(): String =

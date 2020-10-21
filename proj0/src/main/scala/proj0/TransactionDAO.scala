@@ -8,6 +8,7 @@ import org.mongodb.scala.model.{Filters, Sorts}
 import scala.concurrent.Await
 import scala.concurrent.duration.{Duration, SECONDS}
 
+/** Data Access Object for the Transaction class */
 class TransactionDAO(mongoClient: MongoClient) {
 
   val codecRegistry = fromRegistries(fromProviders(classOf[Transaction]), MongoClient.DEFAULT_CODEC_REGISTRY)
@@ -24,34 +25,41 @@ class TransactionDAO(mongoClient: MongoClient) {
     getResults(obs).foreach(println(_))
   }
 
+  /** Returns Sequence containing all Transactions */
   def getTransactions(): Seq[Transaction] = getResults(collection.find())
 
+  /** Returns Sequence containing all Transactions in descending order of amount */
   def getTransactionsByAmt() =
   {
     getResults(collection.find().sort(Sorts.descending("amount")))
   }
 
+  /** Returns Sequence containing all Transactions in descending order of date */
   def getTransactionsByDate() =
   {
     getResults(collection.find().sort(Sorts.descending("date")))
   }
 
+  /** Returns Sequence of Transactions involving Account corresponding to account number passed as argument */
   def findTransactions(accountNum: Int) =
   {
     getResults(collection.find(Filters.or(Filters.equal("sendAccount", accountNum),
                                           Filters.equal("receiveAccount", accountNum))))
   }
 
+  /** Inserts Transaction passed as argument into MongoDB database */
   def addTransaction(transaction: Transaction): Unit =
   {
     getResults(collection.insertOne(transaction))
   }
 
+  /** Deletes all Transactions in MongoDB database */
   def deleteAllTransactions(): Unit =
   {
     printResults(collection.deleteMany(Filters.exists("_id")))
   }
 
+  /** Applies balance changes in Transaction passed as argument to corresponding Accounts */
   def applyTransaction(transaction: Transaction, accountsDAO: AccountDAO): Boolean =
   {
     if (accountsDAO.findAccount(transaction.sendAccount).isEmpty)
@@ -72,8 +80,8 @@ class TransactionDAO(mongoClient: MongoClient) {
     if (sendAccount.balance < transaction.amount)
     {
       println(s"\nAccount ${transaction.sendAccount} has insufficient balance.")
-      println(f"Current balance: $$${accountsDAO.findAccount(transaction.sendAccount)(0).balance}")
-      println(f"Amount transferring: $$${transaction.amount}")
+      println(f"Current balance: $$${accountsDAO.findAccount(transaction.sendAccount)(0).balance}%.2f")
+      println(f"Amount transferring: $$${transaction.amount}%.2f")
       println("Transaction declined.\n")
       false
     }

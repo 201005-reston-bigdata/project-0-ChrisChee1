@@ -5,6 +5,7 @@ import java.util.Date
 import org.bson.types.ObjectId
 import sun.java2d.pipe.SpanShapeRenderer.Simple
 
+/** Case class to represent a Transaction in the application */
 case class Transaction(_id: ObjectId, sendAccount: Int, receiveAccount: Int, amount: Float, date: Date) {
 
   override def toString(): String =
